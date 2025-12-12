@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: movie_review
+
+server:
+  port: 8093
