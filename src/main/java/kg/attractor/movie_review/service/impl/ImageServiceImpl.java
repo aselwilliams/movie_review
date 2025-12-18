@@ -21,29 +21,29 @@ import java.util.UUID;
 public class ImageServiceImpl implements ImageService {
     private final FileUtil fileService;
 
-//    @SneakyThrows
-//    public String saveUploadFile(MultipartFile file, String subDir) {
-//        String uuidFile = UUID.randomUUID().toString();
-//        String resultFileName = uuidFile + "_" + file.getOriginalFilename();
-//
-//        Path path = Paths.get(subDir + resultFileName);
-//        Files.createDirectories(path);
-//
-//        Path filePath = Paths.get(path + "/" + resultFileName);
-//        if (!Files.exists(filePath)) {
-//            Files.createFile(filePath);
-//        }
-//        try (OutputStream os = Files.newOutputStream(filePath)) {
-//            os.write(file.getBytes());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        return resultFileName;
-//    }
+    @SneakyThrows
+    public String saveUploadFile(MultipartFile file, String subDir) {
+        String uuidFile = UUID.randomUUID().toString();
+        String resultFileName = uuidFile + "_" + file.getOriginalFilename();
+
+        Path path = Paths.get(subDir + resultFileName);
+        Files.createDirectories(path);
+
+        Path filePath = Paths.get(path + "/" + resultFileName);
+        if (!Files.exists(filePath)) {
+            Files.createFile(filePath);
+        }
+        try (OutputStream os = Files.newOutputStream(filePath)) {
+            os.write(file.getBytes());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return resultFileName;
+    }
 
     @Override
     public ResponseEntity<?> downloadImage(Integer id) {
-        String fileName = "puicture.jpg";
+        String fileName = "picture.jpg";
         return fileService.getOutPutFile(fileName, "/images", MediaType.IMAGE_JPEG);
     }
 }

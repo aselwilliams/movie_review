@@ -9,6 +9,6 @@ import org.springframework.context.annotation.Configuration;
 public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenAPI() {
-        return new OpenAPI().info(new Info().title("Movie API").version("1.0.0"));
+        return new OpenAPI().info(new Info().title("Movie Review Java 25").version("1.0"));
     }
 }

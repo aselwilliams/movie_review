@@ -1,8 +1,12 @@
 package kg.attractor.movie_review.util;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import kg.attractor.movie_review.model.Movie;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -10,6 +14,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
@@ -19,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
+@Component
 public class FileUtil {
 
     private final Gson gson;
@@ -28,12 +34,23 @@ public class FileUtil {
         gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
+//    public List<Movie> getMovies() {
+//        Type listType = new TypeToken<Map<String, List<Movie>>>() {
+//
+//        }.getType();
+//        try (Reader reader = new FileReader("data/movies.json")) {
+//            Map<String, List<Movie>> movies = gson.fromJson(reader, listType);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            return List.of();
+//        }
+//    }
     public List<Movie> getMovies() {
-        Type listType = new TypeToken<Map<String, List<Movie>>>() {
+        Type type = new TypeToken<Map<String, List<Movie>>>() {}.getType();
 
-        }.getType();
         try (Reader reader = new FileReader("data/movies.json")) {
-            Map<String, List<Movie>> movies = gson.fromJson(reader, listType);
+            Map<String, List<Movie>> data = gson.fromJson(reader, type);
+            return data.getOrDefault("movies", List.of());
         } catch (IOException e) {
             e.printStackTrace();
             return List.of();
@@ -51,6 +68,9 @@ public class FileUtil {
                     .contentType(imageJpeg)
                     .body(resource);
         } catch (NoSuchElementException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Image not found");
+        } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Image not found");
         }

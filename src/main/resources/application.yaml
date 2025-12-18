@@ -4,3 +4,13 @@ spring:
 
 server:
   port: 8093
+
+  # DB config
+  datasource:
+    url: jdbc:h2:./db/test;AUTO_SERVER=TRUE
+    username: root
+    password: qwerty
+    driver-class-name: org.h2.Driver
+  sql:
+    init:
+      mode: always
