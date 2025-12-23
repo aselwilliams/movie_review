@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MovieDto {
-    private Integer id;
+//    private Integer id;
     private String name;
     private Director director;
     private Integer year;

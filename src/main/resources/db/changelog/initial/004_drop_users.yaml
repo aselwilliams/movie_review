@@ -1,0 +1,7 @@
+databaseChangeLog:
+  - changeSet:
+      id: drop_table_users
+      author: Asel Williams
+      changes:
+        - dropTable:
+            tableName: users
