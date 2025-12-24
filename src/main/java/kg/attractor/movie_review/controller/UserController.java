@@ -1,5 +1,6 @@
 package kg.attractor.movie_review.controller;
 
+import jakarta.validation.Valid;
 import kg.attractor.movie_review.dto.UserDto;
 import kg.attractor.movie_review.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -18,19 +19,19 @@ public class UserController {
         return userService.getList();
     }
 
-    @GetMapping("{id}")
-    public UserDto getUserById(@PathVariable int id) {
-        return userService.getUserById(id);
-    }
+//    @GetMapping("{id}")
+//    public UserDto getUserById(@PathVariable int id) {
+//        return userService.getUserById(id);
+//    }
 
     @PostMapping
-    public Integer createUser(@RequestBody UserDto userDto) {
-        return userService.createUser(userDto);
+    public void createUser(@RequestBody @Valid UserDto userDto) {
+        userService.createUser(userDto);
     }
 
     @GetMapping("search")
-    public List<UserDto> searchUsers(
-        @RequestParam(name="name") String name) {
-        return userService.searchByName(name);
+    public UserDto searchUsers(
+        @RequestParam(name="email") String email) {
+        return userService.searchByEmail(email);
     }
 }

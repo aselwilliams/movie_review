@@ -26,38 +26,35 @@ public class UserDao {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public List<User> getUsers() {
-        String sql = "SELECT * FROM users";
+        String sql = "SELECT * FROM USER_TABLE";
         return jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class));
     }
 
-    public Optional<User> getUserById(int id) {
-        String sql= "SELECT * FROM users WHERE id = ?";
+//    public Optional<User> getUserById(int id) {
+//        String sql= "SELECT * FROM users WHERE id = ?";
+//
+//        return Optional.ofNullable(
+//                DataAccessUtils.singleResult(
+//                        jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), id)
+//                )
+//        );
+//    }
+
+    public void create(UserDto userDto) {
+        String sql = "insert into USER_TABLE(email, USERNAME, password) values(?,?,?)";
+
+        jdbcTemplate.update(sql, userDto.getEmail(), userDto.getName(), userDto.getPassword());
+    }
+
+    public Optional<User> searchByName(String email) {
+        String sql = "SELECT * FROM USER_TABLE WHERE email like :email";
 
         return Optional.ofNullable(
                 DataAccessUtils.singleResult(
-                        jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), id)
+                        namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource()
+                                        .addValue("email", "%"+ email + "%"), //%Alex%
+                                new BeanPropertyRowMapper<>(User.class))
                 )
         );
-    }
-
-    public Integer create(UserDto userDto) {
-        String sql = "insert into users(name, password) values(?, ?)";
-
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS);
-            ps.setString(1, userDto.getName());
-            ps.setString(2, userDto.getPassword());
-            return ps;
-        }, keyHolder);
-
-        return Objects.requireNonNull(keyHolder.getKey()).intValue();
-    }
-
-    public List<User> searchByName(String name) {
-        String sql = "SELECT * FROM users WHERE name like :name";
-
-        return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource()
-                .addValue("name", "%"+ name + "%"), //%Alex%
-        new BeanPropertyRowMapper<>(User.class));
     }
 }

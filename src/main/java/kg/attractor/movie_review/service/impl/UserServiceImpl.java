@@ -22,41 +22,37 @@ public class UserServiceImpl implements UserService {
         List<UserDto> userDtos = new ArrayList<>();
         users.forEach(user -> {
             UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setName(user.getName());
+            userDto.setEmail(user.getEmail());
+            userDto.setName(user.getUsername());
             userDto.setPassword(user.getPassword());
             userDtos.add(userDto);
         } );
         return userDtos;
     }
 
+//    @Override
+//    public UserDto getUserById(int id) {
+//        User user = userDao.getUserById(id)
+//                .orElseThrow(UserNotFoundException::new);
+//        UserDto userDto = new UserDto();
+//        userDto.setId(user.getId());
+//        userDto.setName(user.getName());
+//        userDto.setPassword(user.getPassword());
+//        return userDto;
+//    }
+
     @Override
-    public UserDto getUserById(int id) {
-        User user = userDao.getUserById(id)
-                .orElseThrow(UserNotFoundException::new);
+    public void createUser(UserDto userDto) {
+        userDao.create(userDto);
+    }
+
+    @Override
+    public UserDto searchByEmail(String email) {
+        User user = userDao.searchByName(email).orElseThrow(UserNotFoundException::new);
         UserDto userDto = new UserDto();
-        userDto.setId(user.getId());
-        userDto.setName(user.getName());
+        userDto.setEmail(user.getEmail());
+        userDto.setName(user.getUsername());
         userDto.setPassword(user.getPassword());
         return userDto;
-    }
-
-    @Override
-    public Integer createUser(UserDto userDto) {
-        return userDao.create(userDto);
-    }
-
-    @Override
-    public List<UserDto> searchByName(String name) {
-        List<User> users = userDao.searchByName(name);
-        List<UserDto> userDtos = new ArrayList<>();
-        users.forEach(user -> {
-            UserDto userDto = new UserDto();
-            userDto.setId(user.getId());
-            userDto.setName(user.getName());
-            userDto.setPassword(user.getPassword());
-            userDtos.add(userDto);
-        });
-        return userDtos;
     }
 }
