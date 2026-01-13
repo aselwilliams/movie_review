@@ -40,10 +40,10 @@ public class UserDao {
 //        );
 //    }
 
-    public void create(UserDto userDto) {
+    public void create(User user) {
         String sql = "insert into USER_TABLE(email, USERNAME, password) values(?,?,?)";
 
-        jdbcTemplate.update(sql, userDto.getEmail(), userDto.getName(), userDto.getPassword());
+        jdbcTemplate.update(sql, user.getEmail(), user.getUsername(), user.getPassword());
     }
 
     public Optional<User> searchByName(String email) {
@@ -56,5 +56,20 @@ public class UserDao {
                                 new BeanPropertyRowMapper<>(User.class))
                 )
         );
+    }
+
+    public Optional<User> findByUsername(String username) {
+        String sql = "SELECT * FROM USER_TABLE WHERE email = ?";
+        return Optional.ofNullable(
+                DataAccessUtils.singleResult(
+                        jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(User.class), username)
+                )
+        );
+    }
+
+    public boolean existsByUsername(String username) {
+        String sql = "select count(EMAIL) from USER_TABLE where USERNAME = ?";
+        Integer count = jdbcTemplate.queryForObject(sql, Integer.class, username);
+        return count != null && count > 0;
     }
 }

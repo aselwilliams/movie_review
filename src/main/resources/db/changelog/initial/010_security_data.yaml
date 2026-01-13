@@ -1,0 +1,41 @@
+databaseChangeLog:
+  - changeSet:
+      id: create authorities
+      author: Asel Williams
+      changes:
+        - sql:
+            comment: Insert data into authority
+            sql: |
+              insert into authorities (authority)
+              values('FULL'), ('READ_ONLY');
+  - changeSet:
+      id: create roles
+      author: Asel Williams
+      changes:
+        - sql:
+            comment: Insert data into roles
+            sql: |
+              insert into roles(role, authority_id)
+              values ('ADMIN', (select id from authorities where authority = 'FULL')),
+                ('GUEST', (select id from authorities where authority = 'READ_ONLY'));
+  - changeSet:
+      id: create users
+      author: Asel Williams
+      changes:
+        - sql:
+            sql: |
+              insert into user_table(email, username, password, enabled, role_id)
+              VALUES (
+                'qwe@qwe.qwe', 
+                'qwe', 
+                '$2a$12$WB2YUbFcCN0tm44SBcKUjua9yiFBsfB3vW02IjuwzY7HGtlQIKzy2', 
+                TRUE,
+                (select id from roles where role = 'ADMIN')
+              ),
+              (
+                'ewq@ewq.com',
+                'ewq',
+                '$2a$12$WB2YUbFcCN0tm44SBcKUjua9yiFBsfB3vW02IjuwzY7HGtlQIKzy2',
+                TRUE,
+                (select id from roles where role = 'GUEST')
+              )

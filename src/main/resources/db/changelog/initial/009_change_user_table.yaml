@@ -1,0 +1,20 @@
+databaseChangeLog:
+  - changeSet:
+      id: modify user table
+      author: Asel Williams
+      changes:
+        - addColumn:
+            tableName: user_table
+            columns:
+              - column:
+                  name: enabled
+                  type: boolean
+                  constraints:
+                    nullable: false
+              - column:
+                  name: role_id
+                  type: long
+                  constraints:
+                    foreignKeyName: fk_role_id
+                    nullable: false
+                    references: roles(id)
