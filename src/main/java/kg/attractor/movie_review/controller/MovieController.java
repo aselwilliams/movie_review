@@ -1,48 +1,29 @@
 package kg.attractor.movie_review.controller;
 
-import kg.attractor.movie_review.dto.MovieDto;
 import kg.attractor.movie_review.service.MovieService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import java.util.List;
-
-@RestController //http:localhost:8080
-@RequestMapping("/movies") //http://localhost:8080/movies
+@Controller
+@RequestMapping("movies")
 @RequiredArgsConstructor
 public class MovieController {
+
     private final MovieService movieService;
 
-    @GetMapping //movies/
-    public ResponseEntity<List<MovieDto>> getAllMovies() {
-        return new ResponseEntity<>(movieService.getAllMovies(), HttpStatus.OK);
-//        return ResponseEntity.ok(movieService.getMovies());
+    @GetMapping
+    public String getMovies(Model model) {
+        model.addAttribute("movies", movieService.getMovies());
+        return "movies/index";
     }
 
-    @GetMapping("/{movieId}") // movies/{movieId}
-    public ResponseEntity<MovieDto> getMovie(@PathVariable Integer movieId) {
-        return new ResponseEntity<>(movieService.getMovieById(movieId), HttpStatus.OK);
-    }
-
-//    @PostMapping
-//    public HttpStatus createMovie(movieDto) {
-//        return HttpStatus.CREATED;
-//    }
-
-    @PostMapping("/add")
-    public ResponseEntity<Void> addMovie(@RequestBody MovieDto movieDto) {
-        movieService.createMovie(movieDto);
-        return ResponseEntity.ok().build();
-    }
-//    @PutMapping
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteMovie(@PathVariable Integer id) {
-        if (movieService.deleteMovie(id)) return ResponseEntity.noContent().build();
-
-        return ResponseEntity.notFound().build();
+    @GetMapping("{id}")
+    public String findById(@PathVariable Long id, Model model) {
+        model.addAttribute("movie", movieService.findById(id));
+        return "movies/movie";
     }
 }

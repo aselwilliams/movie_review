@@ -1,40 +1,41 @@
 package kg.attractor.movie_review.controller;
 
-import kg.attractor.movie_review.dto.JwtAuthResponse;
-import kg.attractor.movie_review.dto.SignInRequest;
-import kg.attractor.movie_review.dto.SignUpRequest;
+import jakarta.validation.Valid;
 import kg.attractor.movie_review.dto.UserDto;
-import kg.attractor.movie_review.model.User;
 import kg.attractor.movie_review.service.UserService;
-import kg.attractor.movie_review.service.impl.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-@RestController
+@Controller
 @RequestMapping("auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final UserService userService;
-    private final AuthenticationService authenticationService;
 
-    @GetMapping("username/{username}")
-    public User getUserByUsername(@PathVariable String username) {
-        return userService.findByUsername(username);
+    @GetMapping("login")
+    public String login() {
+        return "auth/login";
     }
 
-    @PostMapping
-    public User registerUser(@RequestBody UserDto user) {
-        return userService.createUser(user);
+    @GetMapping("register")
+    public String register(Model model) {
+        model.addAttribute("userDto", new UserDto());
+        return "auth/register";
     }
 
-    @PostMapping("signUp")
-    public JwtAuthResponse signUp(@RequestBody SignUpRequest request) {
-        return authenticationService.signUp(request);
+    @PostMapping("register")
+    public String Register(@Valid UserDto userDto, BindingResult bindingResult, Model model) {
+        if (!bindingResult.hasErrors()) {
+            userService.createUser(userDto);
+            return "redirect:/";
+        }
+        model.addAttribute("userDto", userDto);
+        return "auth/register";
     }
-
-    @PostMapping("signIn")
-    public JwtAuthResponse signIn(@RequestBody SignInRequest request) {
-        return authenticationService.signIn(request);
-    }
-}
+ }
